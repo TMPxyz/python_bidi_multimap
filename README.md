@@ -3,6 +3,8 @@ python library of bi-directional multimap
 
 # usage
 
+*(All the usage examples below are extracted from unit tests)*
+
 ## init
 
         d = BiMMap()
