@@ -1,6 +1,6 @@
 import unittest
 
-from bimap import BiMMap
+from src.Util.bimap import BiMMap
 
 class BiMMapTest(unittest.TestCase):
 
@@ -57,3 +57,15 @@ class BiMMapTest(unittest.TestCase):
         d.clear()
         self.assertEqual(d.pair_count(), 0)
         self.assertFalse(d.has_pair('C', 4))
+
+    def test_dup_pair(self):
+        d = BiMMap()
+        d.add_pair(1, 2)
+        self.assertEqual( d.pair_count(), 1)
+        d.add_pair(1, 2, dup='ignore')
+        self.assertEqual( d.pair_count(), 1)
+        d.radd_pair(2, 1, dup='ignore')
+        self.assertEqual( d.pair_count(), 1)
+
+        self.assertRaises(KeyError, d.add_pair, 1, 2 )
+        self.assertRaises(KeyError, d.radd_pair, 2, 1)

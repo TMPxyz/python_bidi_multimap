@@ -76,6 +76,8 @@ class MMap:
 
 class BiMMap:
     """a bidirectional multimap"""
+    DEF_NONE = "BIMAP__NONE"
+
     def __init__(self):
         self._m = MMap()
         self._im = MMap()
@@ -102,13 +104,13 @@ class BiMMap:
         self._m.clear()
         self._im.clear()
 
-    def get(self, k, d=None):
-        if d is None:
+    def get(self, k, d=DEF_NONE):
+        if d is self.DEF_NONE:
             return self._m[k]
         else:
             return self._m[k] if k in self._m else d
-    def rget(self, k, d=None):
-        if d is None:
+    def rget(self, k, d=DEF_NONE):
+        if d is self.DEF_NONE:
             return self._im[k]
         else:
             return self._im[k] if k in self._im else d
@@ -123,10 +125,20 @@ class BiMMap:
     def rhas_pair(self, k, v):
         return self._im.has_pair(k, v)
 
-    def add_pair(self, k, v):
+    def add_pair(self, k, v, dup='raise'):
+        if self.has_pair(k, v):
+            if dup is 'raise': raise KeyError(f"({k}, {v}) already in map")
+            elif dup is 'ignore': return
+            else: raise RuntimeError(f"unexpected dup op {dup}")
+
         self._m.add_pair(k, v)
         self._im.add_pair(v, k)
-    def radd_pair(self, k, v):
+    def radd_pair(self, k, v, dup='raise'):
+        if self.rhas_pair(k, v):
+            if dup is 'raise': raise KeyError(f"({k}, {v}) already in map")
+            elif dup is 'ignore': return
+            else: raise RuntimeError(f"unexpected dup op {dup}")
+
         self._im.add_pair(k, v)
         self._m.add_pair(v, k)
 
